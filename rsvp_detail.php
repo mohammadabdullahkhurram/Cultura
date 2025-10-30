@@ -4,7 +4,7 @@ include 'includes/header.php';
 
 $rsvp_id = $_GET['rsvp_id'] ?? 0;
 
-// Get single RSVP details for EVENT (not post)
+//get single RSVP details for EVENT
 $sql = "SELECT r.*,
                u.user_id, u.name as user_name, u.email as user_email, u.status as user_status,
                e.event_id, e.name as event_name, e.description, e.location, e.start_time, e.end_time, e.capacity,
