@@ -1,40 +1,21 @@
-<?php require_once 'db.php'; ?>
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Search Posts</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header class="site-header">
-  <div class="bar">
-    <a class="brand" href="index.html">
-      <span class="word">CULTURA</span>
-      <span class="tag">Constructor University Community</span>
-    </a>
-    <nav class="nav">
-      <a href="index.html">Home</a>
-      <a href="maintenance.html">Maintenance</a>
-    </nav>
-  </div>
-</header>
+<?php include 'includes/header.php'; ?>
 
-<main class="container">
-  <article class="paper">
+<article class="paper">
     <h1>Search Posts</h1>
-    <form action="post_results.php" method="get">
-      <label>Keyword<br>
-        <input type="text" name="q" required>
-      </label><br><br>
-      <button class="cta" type="submit">Search</button>
+    
+    <form action="post_results.php" method="GET" class="search-form">
+        <div style="margin-bottom: 24px;">
+            <div>
+                <label for="q" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--brand-ink);">Search Posts</label>
+                <input type="text" name="q" id="q" placeholder="Enter keyword to search posts" 
+                       style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px;">
+            </div>
+        </div>
+        
+        <button type="submit" class="cta" style="width: 100%; text-align: center; justify-content: center;">
+            Search Posts
+        </button>
     </form>
-  </article>
-</main>
+</article>
 
-<footer class="site-footer">
-  <p>&copy; Cultura</p>
-</footer>
-</body>
-</html>
+<?php include 'includes/footer.php'; ?>
