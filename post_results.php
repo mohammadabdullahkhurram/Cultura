@@ -1,60 +1,114 @@
-<?php require_once 'db.php';
+<?php
+include 'includes/database.php';
+include 'includes/header.php';
+
+// Get search parameter
 $q = trim($_GET['q'] ?? '');
-$rows = [];
-if ($q !== '') {
-  $sql = "SELECT post_id, title FROM posts WHERE title LIKE CONCAT('%', ?, '%') OR content LIKE CONCAT('%', ?, '%') ORDER BY title";
-  $st = $conn->prepare($sql);
-  $st->bind_param("ss", $q, $q);
-  $st->execute();
-  $rows = $st->get_result()->fetch_all(MYSQLI_ASSOC);
+$posts = [];
+
+if (!empty($q)) {
+    $sql = "SELECT p.post_id, p.title, p.content, p.country, p.theme, p.attachments_url,
+                   u.name AS creator_name, pt.name AS type_name
+            FROM posts p
+            LEFT JOIN users u ON u.user_id = p.creator_id
+            LEFT JOIN post_types pt ON pt.type_id = p.type_id
+            WHERE p.title LIKE ? OR p.content LIKE ? 
+            ORDER BY p.title ASC";
+    
+    $stmt = $pdo->prepare($sql);
+    $searchTerm = "%$q%";
+    $stmt->execute([$searchTerm, $searchTerm]);
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Post Results</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header class="site-header">
-  <div class="bar">
-    <a class="brand" href="index.html">
-      <span class="word">CULTURA</span>
-      <span class="tag">Constructor University Community</span>
-    </a>
-    <nav class="nav">
-      <a href="index.html">Home</a>
-      <a href="maintenance.html">Maintenance</a>
-    </nav>
-  </div>
-</header>
 
-<main class="container">
-  <article class="paper">
-    <h1>Results for “<?= htmlspecialchars($q) ?>”</h1>
-    <?php if ($q === ''): ?>
-      <p>No query.</p>
-    <?php elseif (!$rows): ?>
-      <p>No matches found.</p>
+<article class="paper">
+    <h1>Post Search Results</h1>
+
+    <!-- Display search criteria -->
+    <div class="callout" style="margin-bottom: 30px;">
+        <div>
+            <strong>Search Criteria</strong>
+            <div class="meta">
+                <?php
+                if (!empty($q)) {
+                    echo "Keyword: '$q'";
+                } else {
+                    echo "No search term provided";
+                }
+                ?>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <strong>Found</strong>
+            <div class="meta"><?= count($posts) ?> posts</div>
+        </div>
+    </div>
+
+    <?php if (empty($q)): ?>
+        <div style="text-align: center; padding: 60px 20px; color: var(--muted);">
+            <p style="font-size: 18px; margin-bottom: 20px;">Please enter a search term.</p>
+            <a href="post_search.php" class="cta alt">Back to Search</a>
+        </div>
+    <?php elseif (empty($posts)): ?>
+        <div style="text-align: center; padding: 60px 20px; color: var(--muted);">
+            <p style="font-size: 18px; margin-bottom: 20px;">No posts found matching your criteria.</p>
+            <a href="post_search.php" class="cta alt">Try another search</a>
+        </div>
     <?php else: ?>
-      <ul>
-        <?php foreach ($rows as $r): ?>
-          <li>
-            <a href="post_detail.php?id=<?= (int)$r['post_id'] ?>">
-              <?= htmlspecialchars($r['title']) ?>
-            </a>
-          </li>
-        <?php endforeach; ?>
-      </ul>
+        <div class="cards">
+            <?php foreach ($posts as $post): ?>
+                <article class="card">
+                    <?php if ($post['attachments_url']): ?>
+                        <div class="card-image">
+                            <img src="<?= htmlspecialchars($post['attachments_url']) ?>" alt="Post image" 
+                                 style="width: 100%; height: 120px; object-fit: cover; border-radius: var(--radius) var(--radius) 0 0;">
+                        </div>
+                    <?php else: ?>
+                        <div class="card-image">
+                            <?= substr(htmlspecialchars($post['title']), 0, 2) ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <div class="body">
+                        <h3><?= htmlspecialchars($post['title']) ?></h3>
+                        
+                        <div class="meta">
+                            👤 <?= htmlspecialchars($post['creator_name'] ?? 'Unknown') ?>
+                        </div>
+                        
+                        <div class="meta">
+                            🏷️ <?= htmlspecialchars($post['type_name'] ?? 'General') ?>
+                        </div>
+                        
+                        <?php if ($post['country']): ?>
+                            <div class="meta">
+                                🌍 <?= htmlspecialchars($post['country']) ?>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if ($post['theme']): ?>
+                            <div class="meta">
+                                💬 <?= htmlspecialchars($post['theme']) ?>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <p style="margin: 12px 0; font-size: 14px; line-height: 1.5;">
+                            <?= nl2br(htmlspecialchars(substr($post['content'], 0, 120))) ?><?= strlen($post['content']) > 120 ? '...' : '' ?>
+                        </p>
+                        
+                        <a href="post_detail.php?id=<?= $post['post_id'] ?>" class="cta" style="display: inline-block; padding: 8px 16px; font-size: 14px; text-align: center;">
+                            Read More
+                        </a>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
     <?php endif; ?>
-    <p><a href="post_search.php">New search</a></p>
-  </article>
-</main>
 
-<footer class="site-footer">
-  <p>&copy; Cultura</p>
-</footer>
-</body>
-</html>
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="post_search.php" class="cta alt">New Search</a>
+    </div>
+</article>
+
+<?php include 'includes/footer.php'; ?>
