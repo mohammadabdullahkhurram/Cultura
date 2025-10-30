@@ -2,12 +2,12 @@
 include 'includes/database.php';
 include 'includes/header.php';
 
-// Get search parameters
+//get search parameters
 $user_name = $_GET['user_name'] ?? '';
 $event_name = $_GET['event_name'] ?? '';
 $status_id = $_GET['status_id'] ?? '';
 
-// Build query for EVENT RSVPs (not post RSVPs)
+//build query for EVENT RSVPs
 $sql = "SELECT r.rsvp_id, r.created_at,
                u.user_id, u.name as user_name, u.email as user_email,
                e.event_id, e.name as event_name, e.start_time, e.location,
@@ -37,7 +37,7 @@ if (!empty($status_id)) {
 
 $sql .= " ORDER BY r.created_at DESC";
 
-// Execute query
+//execute query
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $rsvps = $stmt->fetchAll(PDO::FETCH_ASSOC);
