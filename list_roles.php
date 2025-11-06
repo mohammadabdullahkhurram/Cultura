@@ -1,4 +1,6 @@
 <?php require __DIR__ . '/db.php';
+require_once 'auth_guard.php';
+
 $rows = $pdo->query("SELECT role_id, role_name, description FROM roles ORDER BY role_name")->fetchAll();
 ?>
 <!doctype html>
