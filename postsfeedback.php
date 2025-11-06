@@ -1,4 +1,5 @@
 <?php
+require_once 'auth_guard.php';
 //DB CONNECTION
 $host = "localhost";
 $user = "root";
