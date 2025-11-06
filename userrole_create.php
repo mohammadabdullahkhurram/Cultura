@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/db.php';
+require_once 'auth_guard.php';
 
 $user_id = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
 $role_id = isset($_POST['role_id']) ? (int)$_POST['role_id'] : 0;
