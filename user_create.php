@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/db.php';
+require_once 'auth_guard.php';
 
 $name = trim($_POST['name'] ?? '');
 $email = trim($_POST['email'] ?? '');
