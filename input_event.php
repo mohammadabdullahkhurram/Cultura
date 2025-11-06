@@ -1,4 +1,5 @@
 <?php
+require_once 'auth_guard.php';
 //db connectio
 $host = "localhost";
 $user = "root";
@@ -93,4 +94,5 @@ if (!$managers) { die("Error fetching users: " . $conn->error); }
     </article>
   </main>
 </body>
+
 </html>
