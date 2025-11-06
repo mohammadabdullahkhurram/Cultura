@@ -1,5 +1,6 @@
 <?php
 require 'db.php';
+require_once 'auth_guard.php';
 $event_id = $_POST['event_id'] ?? null;
 $category_id = $_POST['category_id'] ?? null;
 
@@ -18,3 +19,4 @@ try {
 }
 echo '<p><a href="maintenance.html">Back to Maintenance</a></p>';
 ?>
+
