@@ -1,4 +1,5 @@
 <?php
+require_once 'auth_guard.php';
 // DB CONNECTION
 $host = "localhost";
 $user = "root";
@@ -68,4 +69,5 @@ $err = $conn->error;
     </article>
   </main>
 </body>
+
 </html>
