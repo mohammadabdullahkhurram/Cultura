@@ -1,4 +1,6 @@
-<?php require __DIR__ . '/db.php'; ?>
+<?php require __DIR__ . '/db.php';
+require_once 'auth_guard.php';
+?>
 <!doctype html>
 <html lang="en">
 <head>
