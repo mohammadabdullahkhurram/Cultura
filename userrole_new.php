@@ -1,4 +1,5 @@
 <?php require __DIR__ . '/db.php';
+require_once 'auth_guard.php';
 // Fetch users and roles for the selects
 $users = $pdo->query("SELECT user_id, name, email FROM users ORDER BY created_at DESC")->fetchAll();
 $roles = $pdo->query("SELECT role_id, role_name FROM roles ORDER BY role_name")->fetchAll();
