@@ -1,5 +1,6 @@
 <?php
 require 'db.php';
+require_once 'auth_guard.php';
 
 // fetch events and categories
 try {
@@ -53,3 +54,4 @@ try {
   </main>
 </body>
 </html>
+
