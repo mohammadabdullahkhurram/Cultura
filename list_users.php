@@ -1,4 +1,6 @@
 <?php require __DIR__ . '/db.php';
+require_once 'auth_guard.php';
+
 $rows = $pdo->query("SELECT user_id, name, email, status, created_at FROM users ORDER BY created_at DESC")->fetchAll();
 ?>
 <!doctype html>
