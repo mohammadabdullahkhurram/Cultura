@@ -1,4 +1,5 @@
 <?php
+require_once 'auth_guard.php';
 // DB CONNECTION
 $host = "localhost";
 $user = "root";
@@ -45,4 +46,5 @@ if ($conn->connect_error) { die("DB connection failed: " . $conn->connect_error)
     </article>
   </main>
 </body>
+
 </html>
