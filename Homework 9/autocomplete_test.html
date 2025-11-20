@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Autocomplete Test • Cultura</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        body { padding: 20px; font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; }
+        label { font-weight: bold; display: block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Autocomplete Test Page</h1>
+    <p>Test the autocomplete functionality for different search types:</p>
+    
+    <div>
+        <label for="test-event">Event Search:</label>
+        <input type="text" id="test-event" placeholder="Type to test event autocomplete">
+    </div>
+    
+    <div>
+        <label for="test-post">Post Search:</label>
+        <input type="text" id="test-post" placeholder="Type to test post autocomplete">
+    </div>
+    
+    <div>
+        <label for="test-user">User Search:</label>
+        <input type="text" id="test-user" placeholder="Type to test user autocomplete">
+    </div>
+
+    <div>
+        <label for="test-location">Location Search:</label>
+        <input type="text" id="test-location" placeholder="Type to test location autocomplete">
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $("#test-event").autocomplete({
+                source: "autocomplete_events.php",
+                minLength: 2
+            });
+            
+            $("#test-post").autocomplete({
+                source: "autocomplete_posts.php", 
+                minLength: 2
+            });
+            
+            $("#test-user").autocomplete({
+                source: "autocomplete_users.php",
+                minLength: 2
+            });
+
+            $("#test-location").autocomplete({
+                source: "autocomplete_locations.php",
+                minLength: 2
+            });
+        });
+    </script>
+</body>
+</html>
