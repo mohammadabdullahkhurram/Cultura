@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Location • Cultura</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: var(--radius);
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .location-info {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .info-item {
+            padding: 12px;
+            background: rgba(20,58,123,.05);
+            border-radius: 8px;
+        }
+        .info-item strong {
+            display: block;
+            color: var(--brand);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="bar">
+            <a class="brand" href="index.html">
+                <span class="word">CULTURA</span>
+                <span class="tag">Constructor University Community</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="event_search.php">Events</a>
+                <a href="post_search.php">Posts</a>
+                <a href="rsvp_search.php">My RSVPs</a>
+                <a href="geo.html" aria-current="page">My Location</a>
+                <a href="imprint.html">Imprint</a>
+                <a href="maintenance.html">Maintenance</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="section">
+            <div class="paper">
+                <h1>Your Location</h1>
+                <p>This service detects your approximate location based on your IP address and displays it on an interactive map powered by OpenStreetMap.</p>
+
+                <div id="loading" class="loading">
+                    <p>🔍 Detecting your location...</p>
+                </div>
+
+                <div id="locationInfo" class="location-info" style="display: none;">
+                    <h3 style="margin-top: 0; color: var(--brand-ink);">Location Details</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>IP Address</strong>
+                            <span id="ipAddress">-</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Coordinates</strong>
+                            <span id="coordinates">-</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>City</strong>
+                            <span id="city">-</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Region</strong>
+                            <span id="region">-</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Country</strong>
+                            <span id="country">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mapContainer">
+                    <div id="map"></div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
+                    <button onclick="refreshLocation()" class="cta">Refresh Location</button>
+                    <a href="index.html" class="cta alt">Back to Home</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="inner">
+            <div>© <span id="yr"></span> Cultura</div>
+            <div><a href="imprint.html">Imprint and disclaimer</a></div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        //global variables
+        let map;
+        let marker;
+        let circle;
+
+        //initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('yr').textContent = new Date().getFullYear();
+            initializeMap();
+            getLocation();
+        });
+
+        //initialize Leaflet map
+        function initializeMap() {
+            //create map with default view (will be updated with user's location)
+            map = L.map('map').setView([0, 0], 2);
+            
+            //add OpenSttreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            }).addTo(map);
+        }
+
+        //get user's location from IP
+        async function getLocation() {
+            const loadingElement = document.getElementById('loading');
+            const locationInfoElement = document.getElementById('locationInfo');
+            
+            try {
+                //fetch location data from ipinfo.io with your token
+                const response = await fetch('https://ipinfo.io/json?token=9f5015c5493f9e');
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.json();
+                
+                //extract coordinates from loc string (format: "lat,lon")
+                const [lat, lon] = data.loc.split(',').map(coord => parseFloat(coord));
+                
+                //update UI with location information
+                updateLocationInfo(data, lat, lon);
+                
+                //update map with user's location
+                updateMap(lat, lon, data.ip);
+                
+                //hide loading, show info
+                loadingElement.style.display = 'none';
+                locationInfoElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error fetching location:', error);
+                loadingElement.innerHTML = `
+                    <p>❌ Error detecting your location</p>
+                    <p style="font-size: 14px; color: var(--muted);">${error.message}</p>
+                    <button onclick="getLocation()" class="cta" style="margin-top: 10px;">Try Again</button>
+                `;
+            }
+        }
+
+        //update the location information  display
+        function updateLocationInfo(data, lat, lon) {
+            document.getElementById('ipAddress').textContent = data.ip;
+            document.getElementById('coordinates').textContent = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+            document.getElementById('city').textContent = data.city || 'Unknown';
+            document.getElementById('region').textContent = data.region || 'Unknown';
+            document.getElementById('country').textContent = data.country || 'Unknown';
+        }
+
+        // Update the map with user's location
+        function updateMap(lat, lon, ip) {
+            //remove existing marker and circle if they exist
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            if (circle) {
+                map.removeLayer(circle);
+            }
+
+            //set map    view to user's location with appropriate zoom
+            map.setView([lat, lon], 13);
+
+            //add marker for user's location
+            marker = L.marker([lat, lon]).addTo(map);
+            
+            //aadd popup with IP address
+            marker.bindPopup(`
+                <div style="padding: 8px;">
+                    <strong>Your Location</strong><br>
+                    IP: ${ip}<br>
+                    Coordinates: ${lat.toFixed(4)}, ${lon.toFixed(4)}
+                </div>
+            `).openPopup();
+
+            // Add a circle for better visualization (optional)
+            circle = L.circle([lat, lon], {
+                color: 'var(--brand)',
+                fillColor: 'var(--brand)',
+                fillOpacity: 0.1,
+                radius: 500
+            }).addTo(map);
+        }
+
+        //refresh location
+        function refreshLocation() {
+            const loadingElement = document.getElementById('loading');
+            const locationInfoElement = document.getElementById('locationInfo');
+            
+            locationInfoElement.style.display = 'none';
+            loadingElement.style.display = 'block';
+            loadingElement.innerHTML = '<p>🔍 Detecting your location...</p>';
+            
+            getLocation();
+        }
+    </script>
+</body>
+</html>
