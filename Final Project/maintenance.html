@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maintenance • Cultura</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .menu-section {
+      max-width: 800px;
+      margin: 40px auto;
+      background: var(--paper, #fff);
+      border: 1px solid var(--border, #ccc);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+    }
+    .menu-section h2 {
+      margin-top: 0;
+      color: var(--brand-ink, #002600);
+    }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="bar">
+      <a class="brand" href="index.html">
+        <span class="word">CULTURA</span>
+        <span class="tag">Constructor University Community</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#posts">Posts</a>
+        <a href="index.html#events">Events</a>
+        <a href="imprint.html">Imprint</a>
+        <a href="maintenance.html" aria-current="page">Maintenance</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Section 1: Data Maintenance -->
+    <div class="menu-section">
+      <h2>Data Maintenance</h2>
+      <p>Use these pages to insert data into the database.</p>
+
+      <h3>Core Content</h3>
+      <ul>
+        <li><a href="input_users.php">Users</a></li>
+        <li><a href="input_posts.php">Posts</a></li>
+        <li><a href="input_posttype.php">Post Types</a></li>
+        <li><a href="input_category.php">Categories</a></li>
+      </ul>
+
+      <h3>Events</h3>
+      <ul>
+        <li><a href="input_event.php">Events</a></li>
+        <li><a href="input_event_category.php">Event Categories</a></li>
+      </ul>
+
+      <h3>Attendance</h3>
+      <ul>
+        <li><a href="input_rsvp.php">RSVPs</a></li>
+        <li><a href="input_rsvpstatus.php">RSVP Status</a></li>
+      </ul>
+    </div>
+
+    <!-- Section 2: User and Role Management -->
+    <div class="menu-section">
+      <h2>User and Role Management</h2>
+      <ul>
+        <li><a href="user_new.php">Add a New User</a></li>
+        <li><a href="userrole_new.php">Assign a Role to a User</a></li>
+        <li><a href="list_users.php" target="_blank">View User List</a></li>
+        <li><a href="list_roles.php" target="_blank">View Role List</a></li>
+      </ul>
+    </div>
+
+    <p style="text-align:center; margin-top:40px;">
+      Return to the <a href="index.html">Home page</a>.
+    </p>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="inner">
+      <div>© <span id="yr"></span> Cultura</div>
+      <div><a href="imprint.html">Imprint and disclaimer</a></div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

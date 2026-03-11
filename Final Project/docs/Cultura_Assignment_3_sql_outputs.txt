@@ -1,0 +1,198 @@
+-- ===== CULTURA DATABASE QUERY OUTPUTS =====
+-- Assignment 3 - 12 SQL Queries with Results
+-- Date: [9/10/2025]
+-- Database: cultura
+
+-- ===== USER AND USER ROLES QUERIES =====
+
+-- QUERY 1: Users with their assigned roles
+-- Shows all users with their combined role assignments, sorted by active status and creation date
++---------+------------------+-------------------------------------+--------+-------------------------+
+| user_id | name             | email                               | status | roles                   |
++---------+------------------+-------------------------------------+--------+-------------------------+
+|       1 | John EventMaster | jevent@constructor.university       | active | ResidentialStaff, Admin |
+|       2 | Sarah Organizer  | sorganizer@constructor.university   | active | ResidentialStaff        |
+|       3 | Mike Coordinator | mcoordinator@constructor.university | active | ResidentialStaff        |
+|       4 | Emma Planner     | eplanner@constructor.university     | active | ResidentialStaff        |
+|       5 | Ali Khan         | akhan@constructor.university        | active | Student                 |
+|       6 | Mina Böttcher    | mboettcher@constructor.university   | active | Student                 |
+|       7 | David Braun      | dbraun@constructor.university       | active | Student, Admin          |
+|       8 | Sara Ahmed       | sahmed@constructor.university       | active | Student                 |
++---------+------------------+-------------------------------------+--------+-------------------------+
+8 rows in set
+
+-- ANALYSIS: All 8 users are active. Users can have multiple roles (e.g., User 1 is both ResidentialStaff and Admin)
+
+-- QUERY 2: Active user count per role
+-- Counts active users per role, filtered to show roles with at least 1 active member
++------------------+-------------------+
+| role_name        | active_user_count |
++------------------+-------------------+
+| ResidentialStaff |                 4 |
+| Student          |                 4 |
+| Admin            |                 2 |
++------------------+-------------------+
+3 rows in set
+
+-- ANALYSIS: ResidentialStaff and Student roles have 4 active users each, Admin has 2
+
+-- QUERY 3: Latest role for each user
+-- Shows the most recently assigned role for each user
++---------+------------------+------------------+---------------------+
+| user_id | name             | latest_role      | latest_assigned_at  |
++---------+------------------+------------------+---------------------+
+|       7 | David Braun      | Admin            | 2025-09-20 14:00:00 |
+|       1 | John EventMaster | Admin            | 2025-09-15 10:00:00 |
+|       8 | Sara Ahmed       | Student          | 2025-09-08 12:00:00 |
+|       6 | Mina Böttcher    | Student          | 2025-09-06 10:00:00 |
+|       5 | Ali Khan         | Student          | 2025-09-05 09:00:00 |
+|       4 | Emma Planner     | ResidentialStaff | 2025-09-04 12:00:00 |
+|       3 | Mike Coordinator | ResidentialStaff | 2025-09-03 11:00:00 |
+|       2 | Sarah Organizer  | ResidentialStaff | 2025-09-02 10:00:00 |
++---------+------------------+------------------+---------------------+
+8 rows in set
+
+-- ANALYSIS: David Braun has the most recent role assignment (Admin on 2025-09-20)
+
+-- ===== POST AND POST TYPE QUERIES =====
+
+-- QUERY 1: All posts with creator and post type information
+-- Shows complete post information including creator and post type, ordered chronologically
++---------+----------------------------+-----------+----------------+---------------+-------------+---------------------+
+| post_id | title                      | post_type | creator        | country       | theme       | created_at          |
++---------+----------------------------+-----------+----------------+---------------+-------------+---------------------+
+|       1 | Moroccan late evening tea  | Tradition | Ali Khan       | Morocco       | Traditions  | 2025-10-01 10:00:00 |
+|       2 | Kimchi Workshop            | Food      | Mina Böttcher  | South Korea   | Food        | 2025-10-02 11:00:00 |
+|       3 | Upcoming Cultural Festival | News      | Ali Khan       | International | Campus      | 2025-10-03 12:00:00 |
+|       4 | Cultural Dance Night       | Activity  | David Braun    | Egypt         | Performance | 2025-10-04 13:00:00 |
+|       5 | Cultural Quiz Night        | Activity  | Mina Böttcher  | Mexico        | Quiz        | 2025-10-05 14:00:00 |
+|       6 | Japanese Tea Ceremony      | Tradition | Sara Ahmed     | Japan         | Traditions  | 2025-10-06 15:00:00 |
++---------+----------------------------+-----------+----------------+---------------+-------------+---------------------+
+6 rows in set
+
+-- ANALYSIS: 6 posts total, spanning 4 countries and various cultural themes
+
+-- QUERY 2: Post count per post type
+-- Shows distribution of posts across different post types
++-----------+-------------+
+| post_type | total_posts |
++-----------+-------------+
+| Tradition |           2 |
+| Activity  |           2 |
+| News      |           1 |
+| Food      |           1 |
++-----------+-------------+
+4 rows in set
+
+-- ANALYSIS: Tradition and Activity are the most common post types (2 posts each)
+
+-- QUERY 3: Posts filtered by specific country
+-- Shows posts specifically from Morocco
++---------------------------+--------------------------------------------------------------------------+----------+-----------+---------+---------------------+
+| title                     | content                                                                  | creator  | post_type | country | created_at          |
++---------------------------+--------------------------------------------------------------------------+----------+-----------+---------+---------------------+
+| Moroccan late evening tea | A post about the famous Moroccan mint tea and its cultural significance. | Ali Khan | Tradition | Morocco | 2025-10-01 10:00:00 |
++---------------------------+--------------------------------------------------------------------------+----------+-----------+---------+---------------------+
+1 row in set
+
+-- ANALYSIS: Only one post from Morocco, created by Ali Khan about traditional tea
+
+-- ===== EVENTS AND EVENT CATEGORIES QUERIES =====
+
+-- QUERY 1: All published events with their categories
+-- Shows all active events with their combined category assignments
++----------+-------------------------+------------------------------------------------+-----------------+---------------------+----------+------------------------------------+
+| event_id | event_name              | description                                    | location        | datetime            | capacity | categories                         |
++----------+-------------------------+------------------------------------------------+-----------------+---------------------+----------+------------------------------------+
+|        1 | Rock Music Festival     | Annual rock music festival with multiple bands | Main Auditorium | 2025-11-15 19:00:00 |      200 | Music Concerts, Cultural Festivals |
+|        2 | Basketball Championship | Inter-college basketball finals                | Sports Complex  | 2025-11-20 18:00:00 |      150 | Sports Events                      |
+|        3 | Jazz Night              | Live jazz performance                          | Music Hall      | 2025-11-25 20:00:00 |       80 | Music Concerts                     |
+|        4 | Python Coding Workshop  | Learn Python programming basics                | Computer Lab    | 2025-12-01 14:00:00 |       30 | Academic Workshops                 |
+|        6 | Art Gallery Opening     | Student art exhibition opening                 | Art Gallery     | 2025-12-10 17:00:00 |       60 | Art Exhibitions                    |
+|        7 | Cultural Food Fair      | International food tasting event               | Main Hall       | 2025-12-15 18:00:00 |      120 | Music Concerts, Cultural Festivals |
+|        8 | Data Science Seminar    | Advanced data science techniques               | Lecture Hall    | 2025-12-20 15:00:00 |       50 | Academic Workshops                 |
+|        9 | Classical Concert       | Orchestra performance                          | Concert Hall    | 2025-12-22 19:00:00 |      120 | Music Concerts                     |
++----------+-------------------------+------------------------------------------------+-----------------+---------------------+----------+------------------------------------+
+8 rows in set
+
+-- ANALYSIS: 8 published events, some events belong to multiple categories (e.g., Rock Music Festival)
+
+-- QUERY 2: Events filtered by specific category
+-- Shows only events in the 'Music Concerts' category
++----------+---------------------+------------------------------------------------+-----------------+---------------------+----------+
+| event_id | event_name          | description                                    | location        | datetime            | capacity |
++----------+---------------------+------------------------------------------------+-----------------+---------------------+----------+
+|        1 | Rock Music Festival | Annual rock music festival with multiple bands | Main Auditorium | 2025-11-15 19:00:00 |      200 |
+|        3 | Jazz Night          | Live jazz performance                          | Music Hall      | 2025-11-25 20:00:00 |       80 |
+|        7 | Cultural Food Fair  | International food tasting event               | Main Hall       | 2025-12-15 18:00:00 |      120 |
+|        9 | Classical Concert   | Orchestra performance                          | Concert Hall    | 2025-12-22 19:00:00 |      120 |
++----------+---------------------+------------------------------------------------+-----------------+---------------------+----------+
+4 rows in set
+
+-- ANALYSIS: 4 events in Music Concerts category, spanning different music genres
+
+-- QUERY 3: Most active event categories
+-- Shows category popularity based on published event count
++--------------------+--------------+
+| category_name      | total_events |
++--------------------+--------------+
+| Music Concerts     |            4 |
+| Academic Workshops |            2 |
+| Cultural Festivals |            2 |
+| Sports Events      |            1 |
+| Art Exhibitions    |            1 |
++--------------------+--------------+
+5 rows in set
+
+-- ANALYSIS: Music Concerts is the most popular category with 4 events
+
+-- ===== RSVP AND RSVP STATUS QUERIES =====
+
+-- QUERY 1: Event RSVP breakdown for specific event
+-- Shows detailed RSVP information for Event ID 1 (Rock Music Festival)
++----------------+-------------+-----------------+---------------------+
+| attendee_name  | rsvp_status | email_confirmed | responded_on        |
++----------------+-------------+-----------------+---------------------+
+| Ali Khan       | attending   | Yes             | 2025-10-10 10:00:00 |
+| Mina Böttcher  | attending   | Yes             | 2025-10-10 11:00:00 |
+| David Braun    | maybe       | No              | 2025-10-11 09:00:00 |
++----------------+-------------+-----------------+---------------------+
+3 rows in set
+
+-- ANALYSIS: 2 confirmed attendees and 1 maybe for Rock Music Festival
+
+-- QUERY 2: User's upcoming confirmed events
+-- Shows events that User 5 (Ali Khan) is confirmed to attend
++-------------------------+---------------------+-----------------+---------------------+
+| event_name              | event_date          | location        | rsvp_date           |
++-------------------------+---------------------+-----------------+---------------------+
+| Rock Music Festival     | 2025-11-15 19:00:00 | Main Auditorium | 2025-10-10 10:00:00 |
+| Basketball Championship | 2025-11-20 18:00:00 | Sports Complex  | 2025-10-09 14:00:00 |
+| Cultural Food Fair      | 2025-12-15 18:00:00 | Main Hall       | 2025-10-14 13:00:00 |
++-------------------------+---------------------+-----------------+---------------------+
+3 rows in set
+
+-- ANALYSIS: Ali Khan is confirmed for 3 different future events
+
+-- QUERY 3: Events needing more attendees (low attendance)
+-- Identifies events with fewer than 10 confirmed attendees
++----------+-------------------------+----------+---------------------+-----------------+
+| event_id | event_name              | capacity | confirmed_attendees | remaining_spots |
++----------+-------------------------+----------+---------------------+-----------------+
+|        6 | Art Gallery Opening     |       60 |                   0 |              60 |
+|        8 | Data Science Seminar    |       50 |                   0 |              50 |
+|        9 | Classical Concert       |      120 |                   0 |             120 |
+|        3 | Jazz Night              |       80 |                   1 |              79 |
+|        4 | Python Coding Workshop  |       30 |                   1 |              29 |
+|        7 | Cultural Food Fair      |      120 |                   1 |             119 |
+|        1 | Rock Music Festival     |      200 |                   2 |             198 |
+|        2 | Basketball Championship |      150 |                   2 |             148 |
++----------+-------------------------+----------+---------------------+-----------------+
+8 rows in set
+
+-- ANALYSIS: Most events have low attendance, with 3 events having zero confirmed attendees
+
+-- ===== SUMMARY =====
+-- All 12 queries executed successfully
+-- Data relationships and constraints working correctly
+-- Sample data provides meaningful results for all query types
